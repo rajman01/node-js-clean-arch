@@ -1,10 +1,13 @@
-class User {
-    constructor({ first_name, last_name, email, phone, password }) {
+export default class User {
+    constructor({ first_name, last_name, email, phone, password, role, status, status_reason }) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.email = email;
         this.phone = phone;
         this.password = password;
+        this.role = role;
+        this.status = status;
+        this.status_reason = status_reason;
     }
 
     toObject() {
@@ -14,8 +17,15 @@ class User {
             email: this.email,
             phone: this.phone,
             password: this.password,
+            role: this.role,
+            status: this.status,
+            status_reason: this.status_reason,
         };
     }
-}
 
-export default User;
+    static createRules() {}
+
+    static updateRules() {}
+
+    static loginRules() {}
+}

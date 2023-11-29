@@ -4,7 +4,7 @@ export default class APITokenCache {
         this.config = config;
     }
 
-    setToken({token, exp, data}) {
+    setToken({ token, exp, data }) {
         return Promise.reject(new Error("Not implemented"));
     }
 

@@ -1,4 +1,4 @@
-class Database {
+export default class Database {
     constructor({ logger, config }) {
         this.userRepository = null;
         this.logger = logger;
@@ -13,5 +13,3 @@ class Database {
         return Promise.reject(new Error("Not implemented"));
     }
 }
-
-export default Database;

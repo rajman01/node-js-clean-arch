@@ -2,11 +2,13 @@
     "name": "js-clean-arch",
     "version": "1.0.0",
     "description": "",
-    "main": "src/app.js",
+    "main": "src/index.js",
     "type": "module",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "prettier": "npx prettier --write ."
+        "prettier": "npx prettier --write .",
+        "start": "node src/index.js",
+        "dev": "nodemon src/index.js"
     },
     "repository": {
         "type": "git",
@@ -20,9 +22,12 @@
     "homepage": "https://github.com/rajman01/node-js-clean-arch#readme",
     "dependencies": {
         "bcryptjs": "^2.4.3",
+        "cors": "^2.8.5",
         "crypto": "^1.0.1",
         "dotenv": "^16.3.1",
         "express": "^4.18.2",
+        "express-rate-limit": "^7.1.5",
+        "http-status": "^1.7.3",
         "jsonwebtoken": "^9.0.2",
         "mongoose": "^8.0.1",
         "mongoose-aggregate-paginate-v2": "^1.0.6",
@@ -30,6 +35,7 @@
         "nanoid": "^5.0.3",
         "rand-token": "^1.0.1",
         "redis": "^4.6.11",
+        "validatorjs": "^3.22.1",
         "winston": "^3.11.0"
     },
     "devDependencies": {

@@ -1,6 +1,7 @@
 import UserRepo from "../../../../application/repositories/user.js";
 import UserModel from "../models/user.js";
 import Base from "./base.js";
+import User from "../../../../entities/user.js";
 
 export default class UserRepository extends UserRepo {
     constructor({ logger }) {
@@ -9,19 +10,22 @@ export default class UserRepository extends UserRepo {
     }
 
     async create(user) {
-        return this.base.create(user);
+        return new User(await this.base.create(user));
     }
 
     async find(filter, opts) {
-        return this.base.find(filter, opts);
+        const users = await this.base.find(filter, opts);
+        return users.map(u => new User(u));
     }
 
     async findOne(filter, opts) {
-        return this.base.findOne(filter, opts);
+        const user = await this.base.findOne(filter, opts);
+        return user ? new User(user) : null;
     }
 
     async findById(id, opts) {
-        return this.base.findById(id, opts);
+        const user = await this.base.findById(id, opts);
+        return user ? new User(user) : null;
     }
 
     async findOneAndUpdate(filter, update, opts) {

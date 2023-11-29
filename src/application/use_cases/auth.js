@@ -1,20 +1,22 @@
 import User from "../../entities/user";
 import APITokenUseCase from "./apiToken.js";
+import { UnauthorizedError, BadRequestError } from "../../entities/error.js";
 
 export default class AuthUseCase {
-    constructor({ logger, userRepository, authService, cryptService, apiTokenCache }) {
+    constructor({ logger, userRepository, authService, cryptService, apiTokenCache, authValidator }) {
         this.userRepository = userRepository;
         this.authService = authService;
         this.cryptService = cryptService;
+        this.authValidator = authValidator;
         this.logger = logger;
-        this.apiTokenUseCase = new APITokenUseCase({ logger, apiTokenCache});
+        this.apiTokenUseCase = new APITokenUseCase({ logger, apiTokenCache });
     }
 
     async authenticate(token, apiToken) {
         let data = await this.authService.verifyToken(token);
 
         if (!data) {
-            throw new Error("Invalid token");
+            throw new UnauthorizedError("Invalid token");
         }
 
         data = this.cryptService.decrypt(data);
@@ -22,49 +24,49 @@ export default class AuthUseCase {
         const { id } = data;
 
         if (!id) {
-            throw new Error("Invalid token");
+            throw new UnauthorizedError("Invalid token");
         }
 
         const user = await this.userRepository.findById(id);
         if (!user) {
-            throw new Error("Invalid token");
+            throw new UnauthorizedError("Invalid token");
         }
 
         const apiTokenData = await this.apiTokenUseCase.validateToken(apiToken);
         if (!apiTokenData) {
-            throw new Error("Invalid api token");
+            throw new UnauthorizedError("Invalid api token");
         }
 
         if (apiTokenData.user_id !== id) {
-            throw new Error("Invalid api token");
+            throw new UnauthorizedError("Invalid api token");
         }
 
         return user;
     }
 
     async login(userData) {
-        // TODO: Validate user data, using a library like Joi or validate.js
+        this.authValidator.validateLogin(userData);
 
         const { email, password } = userData;
 
         // get user by email
         const user = await this.userRepository.findOne({ email }, { select: "+password" });
         if (!user) {
-            throw new Error("Invalid email or password");
+            throw new BadRequestError("Invalid email or password");
         }
 
         // check if password is correct
         const isValidPassword = await this.authService.comparePassword(password, user.password);
 
         if (!isValidPassword) {
-            throw new Error("Invalid email or password");
+            throw new BadRequestError("Invalid email or password");
         }
 
         // generate token
         const token = await this.authService.generateToken(this.cryptService.encrypt({ id: user._id.toString() }));
 
         // generate api token
-        const apiToken = await this.apiTokenUseCase.createToken({ user_id: user._id.toString() })
+        const apiToken = await this.apiTokenUseCase.createToken({ user_id: user._id.toString() });
 
         // remove password from user object
         Reflect.deleteProperty(user, "password");

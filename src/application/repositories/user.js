@@ -1,4 +1,4 @@
-class UserRepository {
+export default class UserRepository {
     constructor({ logger }) {
         this.logger = logger;
     }
@@ -31,5 +31,3 @@ class UserRepository {
         return Promise.reject(new Error("not implemented"));
     }
 }
-
-export default UserRepository;

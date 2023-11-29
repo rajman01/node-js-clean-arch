@@ -15,7 +15,7 @@ export const parsePemKey = key => {
 export const port = parseInt(process.env.PORT, 10) || 3000;
 export const jwtSecret = parsePemKey(process.env.JWT_SECRET);
 export const mongodbURI = process.env.MONGO_URI;
-export const redisURL = process.env.REDIS_URL;
+export const redisURI = process.env.REDIS_URI;
 export const allowedOrigins = process.env.ALLOWED_ORIGINS.split(",");
 export const encryptionKey = process.env.ENCRYPTION_KEY;
 export const externalEncryptionKey = process.env.EXTERNAL_ENCRYPTION_KEY;
@@ -27,7 +27,7 @@ export default {
     port,
     jwtSecret,
     mongodbURI,
-    redisURL,
+    redisURI,
     allowedOrigins,
     encryptionKey,
     externalEncryptionKey,
