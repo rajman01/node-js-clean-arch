@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import paginate from "mongoose-paginate-v2";
 import aggregatePaginate from "mongoose-aggregate-paginate-v2";
+import User from "../../../../entities/user.js";
 
 const userSchema = new mongoose.Schema(
     {
@@ -25,7 +26,7 @@ const userSchema = new mongoose.Schema(
         },
         role: {
             type: String,
-            default: "user",
+            default: User.CUSTOMER,
         },
         status: {
             type: String,
@@ -50,6 +51,4 @@ const userSchema = new mongoose.Schema(
 userSchema.plugin(paginate);
 userSchema.plugin(aggregatePaginate);
 
-const User = mongoose.model("User", userSchema);
-
-export default User;
+export default mongoose.model("User", userSchema);

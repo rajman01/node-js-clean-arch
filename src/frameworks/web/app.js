@@ -57,9 +57,7 @@ export default class App {
             }
             next();
         });
-        this.server.use((req, res, next) => {
-            this.middlewares.logRequest(req, res, next);
-        });
+        this.server.use(this.middlewares.logRequest.bind(this.middlewares));
     }
 
     registerHandlers() {
@@ -76,12 +74,8 @@ export default class App {
         });
 
         this.server.use(this.config.api.prefix, this.routes);
-        this.server.use((err, req, res, next) => {
-            this.middlewares.handleError(err, req, res, next);
-        });
-        this.server.use((req, res, next) => {
-            this.middlewares.handleNotFound(req, res, next);
-        });
+        this.server.use(this.middlewares.handleError.bind(this.middlewares));
+        this.server.use(this.middlewares.handleNotFound.bind(this.middlewares));
     }
 
     getServer() {

@@ -1,4 +1,4 @@
-import User from "../../entities/user";
+import User from "../../entities/user.js";
 import { BadRequestError } from "../../entities/error.js";
 
 export default class UserUseCase {
@@ -12,10 +12,13 @@ export default class UserUseCase {
     async createUser(userData) {
         await this.userValidator.validateCreate(userData);
 
-        const { email } = userData;
+        const { email, role } = userData;
+        if (!role) {
+            userData.role = User.CUSTOMER;
+        }
 
         // check if user email already exists
-        const checkEmail = await this.userRepository.findOne({ email });
+        const checkEmail = await this.userRepository.findOne({ email, role });
         if (checkEmail) {
             throw new BadRequestError("Email already exists");
         }

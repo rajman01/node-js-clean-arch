@@ -16,6 +16,7 @@ export default class BaseMiddleware {
                 break;
         }
 
+        this.logger.error(err);
         res.status(response.code).json(response);
     }
 

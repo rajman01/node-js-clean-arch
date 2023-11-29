@@ -1,4 +1,3 @@
-import User from "../../entities/user";
 import APITokenUseCase from "./apiToken.js";
 import { UnauthorizedError, BadRequestError } from "../../entities/error.js";
 
@@ -47,10 +46,10 @@ export default class AuthUseCase {
     async login(userData) {
         this.authValidator.validateLogin(userData);
 
-        const { email, password } = userData;
+        const { email, password, role } = userData;
 
         // get user by email
-        const user = await this.userRepository.findOne({ email }, { select: "+password" });
+        const user = await this.userRepository.findOne({ email, role }, { select: "+password" });
         if (!user) {
             throw new BadRequestError("Invalid email or password");
         }
