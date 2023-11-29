@@ -29,11 +29,13 @@ export default class UserRepository extends UserRepo {
     }
 
     async findOneAndUpdate(filter, update, opts) {
-        return this.base.findOneAndUpdate(filter, update, opts);
+        const user = await this.base.findOneAndUpdate(filter, update, opts);
+        return user ? new User(user) : null;
     }
 
     async findOneAndDelete(filter, opts) {
-        return this.base.findOneAndDelete(filter, opts);
+        const user = await this.base.findOneAndDelete(filter, opts);
+        return user ? new User(user) : null;
     }
 
     async list(filter, opts) {

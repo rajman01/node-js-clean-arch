@@ -2,9 +2,23 @@ import BaseController from "./base.js";
 import AuthUseCase from "../../../application/use_cases/auth.js";
 
 export default class AuthController extends BaseController {
-    constructor({ logger, authService, cryptService, databaseService: { userRepository }, cacheService: { apiTokenCache }, validatorService: { authValidator } }) {
+    constructor({
+        logger,
+        authService,
+        cryptService,
+        databaseService: { userRepository },
+        cacheService: { apiTokenCache },
+        validatorService: { authValidator },
+    }) {
         super({ logger });
-        this.authUseCase = new AuthUseCase({ logger, userRepository, authService, cryptService, apiTokenCache, authValidator });
+        this.authUseCase = new AuthUseCase({
+            logger,
+            userRepository,
+            authService,
+            cryptService,
+            apiTokenCache,
+            authValidator,
+        });
     }
 
     async login(req, res) {

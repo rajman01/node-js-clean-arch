@@ -158,25 +158,17 @@ class Base {
         return res ? res.toObject() : null;
     }
 
-    async findOneAndDelete(query = {}, { sort = null } = {}) {}
+    async findOneAndDelete(query = {}, { sort = null } = {}) {
+        return await this.findOneAndUpdate(query, { deleted: true }, { sort });
+    }
 
-    async delete(query = {}) {
+    async deleteMany(query = {}) {
         query = { ...query, deleted: false };
-        const res = await this.Model.updateMany(query, {
+        return await this.Model.updateMany(query, {
             $set: {
                 deleted: true,
             },
         });
-
-        return res;
-    }
-
-    async baseUpdate(query = {}, data) {
-        query = { ...query, deleted: false };
-        const res = await this.Model.updateMany(query, {
-            $set: data,
-        });
-        return res;
     }
 
     getHiddenFields() {

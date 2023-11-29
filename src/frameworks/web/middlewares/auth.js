@@ -3,7 +3,13 @@ import BaseMiddleware from "./base.js";
 import { UnauthorizedError } from "../../../entities/error.js";
 
 export default class AuthMiddleware extends BaseMiddleware {
-    constructor({ logger, databaseService: { userRepository }, cacheService: { apiTokenCache }, authService, cryptService }) {
+    constructor({
+        logger,
+        databaseService: { userRepository },
+        cacheService: { apiTokenCache },
+        authService,
+        cryptService,
+    }) {
         super({ logger });
         this.authUseCase = new AuthUseCase({ logger, userRepository, authService, cryptService, apiTokenCache });
     }

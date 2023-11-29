@@ -8,7 +8,6 @@ export default class User {
         this.role = role;
         this.status = status;
         this.status_reason = status_reason;
-
     }
 
     toObject() {

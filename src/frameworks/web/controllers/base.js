@@ -11,7 +11,7 @@ export default class BaseController {
             message,
             code,
             data,
-        })
+        });
     }
 
     handleError(res, err, code = 500, message = "Internal Server Error") {
