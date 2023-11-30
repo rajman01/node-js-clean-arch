@@ -1,4 +1,4 @@
-import { convertToObjectId } from "../utils.js";
+import { convertToObjectId, parseQuery } from "../utils.js";
 import { Pagination } from "../../../../entities/index.js";
 
 class Base {
@@ -7,13 +7,11 @@ class Base {
     }
 
     async find(query = {}, { select = "", sort = null, populate = null } = {}) {
-        query = { ...query, deleted: false };
+        query = parseQuery(query);
 
         sort = sort || {
             createdAt: -1,
         };
-
-        populate = populate || "";
 
         const res = await this.Model.find(query).select(select).sort(sort).populate(populate);
 
@@ -22,7 +20,7 @@ class Base {
     }
 
     async findOne(query = {}, { select = "", populate = null, sort = null } = {}) {
-        query = { ...query, deleted: false };
+        query = parseQuery(query);
 
         populate = populate || "";
 
@@ -36,19 +34,14 @@ class Base {
     }
 
     async findById(id, { select = "" } = {}) {
-        const query = {
-            _id: convertToObjectId(id),
-            deleted: false,
-        };
-
-        return this.findOne(query, { select });
+        return this.findOne({ _id: convertToObjectId(id) }, { select });
     }
 
     async paginate(
         query = {},
         { pagination: { count = 15, page = 1, sort = -1 } = {}, populate = null, select = null } = {},
     ) {
-        query = { ...query, deleted: false };
+        query = parseQuery(query);
 
         const options = {
             limit: count,
@@ -121,7 +114,7 @@ class Base {
     }
 
     async countDocuments(query = {}) {
-        query = { ...query, deleted: false };
+        query = parseQuery(query);
         return await this.Model.countDocuments(query);
     }
 
@@ -138,7 +131,7 @@ class Base {
     }
 
     async findOneAndUpdate(query = {}, data, {}, { sort = null } = {}) {
-        query = { ...query, deleted: false };
+        query = parseQuery(query);
 
         sort = sort || {
             createdAt: 1,
@@ -163,7 +156,7 @@ class Base {
     }
 
     async deleteMany(query = {}) {
-        query = { ...query, deleted: false };
+        query = parseQuery(query);
         return await this.Model.updateMany(query, {
             $set: {
                 deleted: true,

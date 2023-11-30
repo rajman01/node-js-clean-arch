@@ -205,3 +205,11 @@ export const getSearchPipeline = (search, fields) => {
 
     return pipeline;
 };
+
+export const parseQuery = (query, rules = []) => {
+    const result = {
+        deleted: false,
+    }
+
+
+}
