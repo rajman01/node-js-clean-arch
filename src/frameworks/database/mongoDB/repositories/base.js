@@ -6,8 +6,8 @@ class Base {
         this.Model = model;
     }
 
-    async find(query = {}, { select = "", sort = null, populate = null } = {}) {
-        query = parseQuery(query);
+    async find(query = {}, { select = "", sort = null, populate = null, rules = [] } = {}) {
+        query = parseQuery(query, [...rules, "id-_id", "r-createdAt", "r-updatedAt"]);
 
         sort = sort || {
             createdAt: -1,
@@ -19,8 +19,8 @@ class Base {
         return res.map(r => r.toObject());
     }
 
-    async findOne(query = {}, { select = "", populate = null, sort = null } = {}) {
-        query = parseQuery(query);
+    async findOne(query = {}, { select = "", populate = null, sort = null, rules = [] } = {}) {
+        query = parseQuery(query, [...rules, "id-_id", "r-createdAt", "r-updatedAt"]);
 
         populate = populate || "";
 
@@ -39,9 +39,9 @@ class Base {
 
     async paginate(
         query = {},
-        { pagination: { count = 15, page = 1, sort = -1 } = {}, populate = null, select = null } = {},
+        { pagination: { count = 15, page = 1, sort = -1 } = {}, populate = null, select = null, rules = [] } = {},
     ) {
-        query = parseQuery(query);
+        query = parseQuery(query, [...rules, "id-_id", "r-createdAt", "r-updatedAt"]);
 
         const options = {
             limit: count,
@@ -113,8 +113,8 @@ class Base {
         return res.toObject();
     }
 
-    async countDocuments(query = {}) {
-        query = parseQuery(query);
+    async countDocuments(query = {}, { rules = [] }) {
+        query = parseQuery(query, [...rules, "id-_id", "r-createdAt", "r-updatedAt"]);
         return await this.Model.countDocuments(query);
     }
 
@@ -130,8 +130,8 @@ class Base {
         return this.Model.collection.name;
     }
 
-    async findOneAndUpdate(query = {}, data, {}, { sort = null } = {}) {
-        query = parseQuery(query);
+    async findOneAndUpdate(query = {}, data, {}, { sort = null, rules = [] } = {}) {
+        query = parseQuery(query, [...rules, "id-_id", "r-createdAt", "r-updatedAt"]);
 
         sort = sort || {
             createdAt: 1,
@@ -151,12 +151,12 @@ class Base {
         return res ? res.toObject() : null;
     }
 
-    async findOneAndDelete(query = {}, { sort = null } = {}) {
-        return await this.findOneAndUpdate(query, { deleted: true }, { sort });
+    async findOneAndDelete(query = {}, { sort = null, rules = [] } = {}) {
+        return await this.findOneAndUpdate(query, { deleted: true }, { sort, rules });
     }
 
-    async deleteMany(query = {}) {
-        query = parseQuery(query);
+    async deleteMany(query = {}, { rules = []}) {
+        query = parseQuery(query, [...rules, "id-_id", "r-createdAt", "r-updatedAt"]);
         return await this.Model.updateMany(query, {
             $set: {
                 deleted: true,

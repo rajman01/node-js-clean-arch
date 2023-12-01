@@ -209,7 +209,49 @@ export const getSearchPipeline = (search, fields) => {
 export const parseQuery = (query, rules = []) => {
     const result = {
         deleted: false,
+        ...query,
+    };
+
+    if (rules.length > 0) {
+        for (const rule of rules) {
+            const split = rule.split("-");
+            if (split.length > 1) {
+                const [r, field] = split;
+                if (result[field] === undefined) continue;
+                switch (r) {
+                    case "id":
+                        // check if result[field] is a string
+                        if (typeof result[field] === "string") {
+                            result[field] = convertToObjectId(result[field]);
+                        }
+                        break;
+                    case "ids":
+                        // check if result[field] is an array
+                        if (Array.isArray(result[field])) {
+                            result[field] = {
+                                $in: result[field].map(id => {
+                                    if (typeof id === "string") {
+                                        return convertToObjectId(id);
+                                    }
+                                }),
+                            };
+                        }
+                        break;
+                    case "r":
+                        // check if result[field is an object
+                        if (typeof result[field] === "object") {
+                            result[field] = {};
+                            if (result[field].start !== undefined) {
+                                result[field].$gte = result[field].start;
+                            }
+                            if (result[field].end !== undefined) {
+                                result[field].$lte = result[field].end;
+                            }
+                        }
+                }
+            }
+        }
     }
 
-
-}
+    return result;
+};
