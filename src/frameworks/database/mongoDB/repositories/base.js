@@ -155,7 +155,7 @@ class Base {
         return await this.findOneAndUpdate(query, { deleted: true }, { sort, rules });
     }
 
-    async deleteMany(query = {}, { rules = []}) {
+    async deleteMany(query = {}, { rules = [] }) {
         query = parseQuery(query, [...rules, "id-_id", "r-createdAt", "r-updatedAt"]);
         return await this.Model.updateMany(query, {
             $set: {
