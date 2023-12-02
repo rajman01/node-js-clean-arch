@@ -1,4 +1,5 @@
 import APITokenUseCase from "./apiToken.js";
+import User from "../../entities/user.js";
 import { UnauthorizedError, BadRequestError } from "../../entities/error.js";
 
 export default class AuthUseCase {
@@ -14,11 +15,11 @@ export default class AuthUseCase {
     async authenticate(token, apiToken) {
         let data = await this.authService.verifyToken(token);
 
-        if (!data) {
+        if (!data && !data.data) {
             throw new UnauthorizedError("Invalid token");
         }
 
-        data = this.cryptService.decrypt(data);
+        data = this.cryptService.decrypt(data.data);
 
         const { id } = data;
 
@@ -48,8 +49,12 @@ export default class AuthUseCase {
 
         const { email, password, role } = userData;
 
+        if (!role) {
+            userData.role = User.CUSTOMER;
+        }
+
         // get user by email
-        const user = await this.userRepository.findOne({ email, role }, { select: "+password" });
+        const user = await this.userRepository.findOne({ email, role: userData.role }, { select: "+password" });
         if (!user) {
             throw new BadRequestError("Invalid email or password");
         }
@@ -62,13 +67,13 @@ export default class AuthUseCase {
         }
 
         // generate token
-        const token = await this.authService.generateToken(this.cryptService.encrypt({ id: user._id.toString() }));
+        const token = await this.authService.generateToken({ data: this.cryptService.encrypt({ id: user._id.toString() }) });
 
         // generate api token
         const apiToken = await this.apiTokenUseCase.createToken({ user_id: user._id.toString() });
 
         // remove password from user object
-        Reflect.deleteProperty(user, "password");
+        delete user.password;
 
         return { user, token, api_token: apiToken };
     }

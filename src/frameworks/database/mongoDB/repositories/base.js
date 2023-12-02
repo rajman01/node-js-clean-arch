@@ -16,7 +16,7 @@ class Base {
         const res = await this.Model.find(query).select(select).sort(sort).populate(populate);
 
         // convert to object
-        return res.map(r => r.toObject());
+        return res.map(r => ({ ...r.toObject(), _id: r.toObject()["_id"].toString() }));
     }
 
     async findOne(query = {}, { select = "", populate = null, sort = null, rules = [] } = {}) {
@@ -30,7 +30,7 @@ class Base {
 
         const res = await this.Model.findOne(query).select(select).populate(populate).sort(sort);
 
-        return res ? res.toObject() : null;
+        return res ? { ...res.toObject(), _id: res.toObject()["_id"].toString() } : null;
     }
 
     async findById(id, { select = "" } = {}) {
@@ -60,7 +60,7 @@ class Base {
         const res = await this.Model.paginate(query, options);
 
         return new Pagination({
-            data: res.docs.map(r => r.toObject()),
+            data: res.docs.map(r => ({ ...r.toObject(), _id: r.toObject()["_id"].toString() })),
             total: res.totalDocs,
             page: res.page,
             limit: res.limit,
@@ -105,12 +105,12 @@ class Base {
     }
 
     async create(data) {
-        const res = this.Model.create({
+        const res = await this.Model.create({
             ...data,
             deleted: false,
         });
 
-        return res.toObject();
+        return { ...res.toObject(), _id: res.toObject()["_id"].toString() };
     }
 
     async countDocuments(query = {}, { rules = [] }) {
@@ -148,7 +148,7 @@ class Base {
             },
         );
 
-        return res ? res.toObject() : null;
+        return res ? { ...res.toObject(), _id: res.toObject()["_id"].toString() } : null;
     }
 
     async findOneAndDelete(query = {}, { sort = null, rules = [] } = {}) {

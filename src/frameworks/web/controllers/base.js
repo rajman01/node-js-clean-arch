@@ -19,7 +19,7 @@ export default class BaseController {
 
         code = err.code || code;
         message = err.message || message;
-        const errors = err.errors || null;
+        const errors = err.errors || undefined;
 
         this.logger.error(err);
         res.status(code).json({

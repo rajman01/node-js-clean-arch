@@ -1,4 +1,5 @@
 import Validator from "validatorjs";
+import phone from "phone";
 const { register } = Validator;
 import { flattenObjectKeys, setObjectValueByFlattenedKey } from "./utils.js";
 
@@ -57,6 +58,16 @@ export default class Base {
                 }
             },
             "The :attribute must be a valid JSON string.",
+            null,
+        );
+
+        register(
+            "phone",
+            value => {
+                let isPhoneValid = phone.phone(value);
+                return isPhoneValid.isValid;
+            },
+            "invalid phone number provided, please provide a phone number in the international format",
             null,
         );
     }

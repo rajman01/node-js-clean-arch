@@ -34,6 +34,7 @@
         "mongoose-aggregate-paginate-v2": "^1.0.6",
         "mongoose-paginate-v2": "^1.7.4",
         "nanoid": "^5.0.3",
+        "phone": "^3.1.41",
         "rand-token": "^1.0.1",
         "redis": "^4.6.11",
         "validatorjs": "^3.22.1",

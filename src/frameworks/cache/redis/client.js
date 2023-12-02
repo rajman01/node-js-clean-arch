@@ -15,11 +15,9 @@ export default class RedisClient extends Client {
             return redisClient;
         }
 
-        redisClient = createClient({ url: this.config.redisURI });
+        console.log(this.config.redisURI);
 
-        redisClient.on("connect", () => {
-            this.logger.info("Redis connected");
-        });
+        redisClient = createClient({ url: this.config.redisURI });
 
         redisClient.on("error", error => {
             this.logger.error("Redis error", error);
@@ -29,6 +27,11 @@ export default class RedisClient extends Client {
             this.logger.info("Redis disconnected");
         });
 
+        redisClient.on("connect", () => {
+            this.logger.info("Redis connected");
+        });
+
+        await redisClient.connect();
         this.logger.info("Redis created");
         return redisClient;
     }

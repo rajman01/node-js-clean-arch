@@ -10,7 +10,7 @@ export default class UserUseCase {
     }
 
     async createUser(userData) {
-        await this.userValidator.validateCreate(userData);
+        this.userValidator.validateCreate(userData);
 
         const { email, role } = userData;
         if (!role) {
@@ -18,7 +18,7 @@ export default class UserUseCase {
         }
 
         // check if user email already exists
-        const checkEmail = await this.userRepository.findOne({ email, role });
+        const checkEmail = await this.userRepository.findOne({ email, role: userData.role });
         if (checkEmail) {
             throw new BadRequestError("Email already exists");
         }
@@ -27,6 +27,11 @@ export default class UserUseCase {
 
         const user = new User(userData);
 
-        return this.userRepository.create(user.toObject());
+        const newUser = await this.userRepository.create(user.toObject());
+
+        // delete password from response
+        delete newUser.password;
+
+        return newUser;
     }
 }

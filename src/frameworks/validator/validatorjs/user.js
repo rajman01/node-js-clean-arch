@@ -12,7 +12,7 @@ export default class UserValidator extends UserValidatorInterface {
     validateCreate(user) {
         this.base.validate(user, User.createRules(), (errs, status) => {
             if (!status) {
-                return Promise.reject(new ValidationError("Validation Error", errs));
+                throw new ValidationError("Validation Error", errs.errors);
             }
         });
     }
@@ -20,7 +20,7 @@ export default class UserValidator extends UserValidatorInterface {
     validateUpdate(user) {
         this.base.validate(user, User.updateRules(), (errs, status) => {
             if (!status) {
-                return Promise.reject(new ValidationError("Validation Error", errs));
+                throw new ValidationError("Validation Error", errs.errors);
             }
         });
     }

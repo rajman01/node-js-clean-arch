@@ -19,15 +19,14 @@ export default class CryptService extends CryptServiceInterface {
         const cipher = crypto.createCipheriv("aes-256-gcm", key, nonce);
 
         // Encrypt the plain text
-        const cipherText = Buffer.concat([cipher.update(plainText, "utf8"), cipher.final()]);
+        const cipherText = Buffer.concat([cipher.update(plainText), cipher.final()]);
 
         // Get the authentication tag
 
         const tag = cipher.getAuthTag();
 
         // Concatenate the nonce + encrypted data + tag
-
-        return Promise.resolve(Buffer.concat([nonce, cipherText, tag]).toString("hex"));
+        return Buffer.concat([nonce, cipherText, tag]).toString("hex");
     }
 
     decrypt(data, channel = "internal") {
@@ -50,6 +49,6 @@ export default class CryptService extends CryptServiceInterface {
         // Decrypt the data
         let decryptedString = decipher.update(cipherText);
         decryptedString += decipher.final("utf8");
-        return Promise.resolve(JSON.parse(decryptedString.toString()));
+        return JSON.parse(decryptedString.toString());
     }
 }

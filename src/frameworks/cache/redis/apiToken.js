@@ -7,42 +7,17 @@ export default class APITokenCache extends APITokenCacheInterface {
         this.oneDayInSeconds = 60 * 60 * 24;
     }
 
-    setToken({ token, exp = this.oneDayInSeconds, data }) {
-        return new Promise((resolve, reject) => {
-            redisClient.setex(`api_token_${token}`, exp, JSON.stringify(data), (error, reply) => {
-                if (error) {
-                    this.logger.error("Redis set error", error);
-                    reject(error);
-                }
-
-                resolve(reply);
-            });
-        });
+    async setToken({ token, exp = this.oneDayInSeconds, data }) {
+        await redisClient.setEx(`api_token_${token}`, exp, JSON.stringify(data));
     }
 
-    getToken(token) {
-        return new Promise((resolve, reject) => {
-            redisClient.get(`api_token_${token}`, (error, reply) => {
-                if (error) {
-                    this.logger.error("Redis get error", error);
-                    reject(error);
-                }
-
-                resolve(JSON.parse(reply));
-            });
-        });
+    async getToken(token) {
+        const get = await redisClient.get(`api_token_${token}`);
+        if (!get) return null;
+        return JSON.parse(get);
     }
 
-    deleteToken(token) {
-        return new Promise((resolve, reject) => {
-            redisClient.del(`api_token_${token}`, (error, reply) => {
-                if (error) {
-                    this.logger.error("Redis delete error", error);
-                    reject(error);
-                }
-
-                resolve(reply);
-            });
-        });
+    async deleteToken(token) {
+        await redisClient.del(`api_token_${token}`);
     }
 }

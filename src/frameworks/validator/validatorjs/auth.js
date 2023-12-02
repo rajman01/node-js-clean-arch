@@ -12,7 +12,7 @@ export default class AuthValidator extends AuthValidatorInterface {
     validateLogin(user) {
         this.base.validate(user, User.loginRules(), (errs, status) => {
             if (!status) {
-                return Promise.reject(new ValidationError("Validation Error", errs));
+                throw new ValidationError("Validation Error", errs.errors);
             }
         });
     }
